@@ -1,0 +1,96 @@
+diff --git a/.vscode/settings.json b/.vscode/settings.json
+index d9bc58c..9d2a08f 100644
+--- a/.vscode/settings.json
++++ b/.vscode/settings.json
+@@ -116,8 +116,23 @@
+         "emu_gpio.c": "c",
+         "mode_picross.h": "c",
+         "xlocnum": "c",
+-        "xlocale": "c"
++        "xlocale": "c",
++        "paint_util.h": "c",
++        "stddef.h": "c",
++        "paint_brush.h": "c",
++        "paint_common.h": "c",
++        "paint_draw.h": "c",
++        "swadge_util.h": "c",
++        "paint_nvs.h": "c",
++        "mode_paint.h": "c",
++        "paint_type.h": "c"
+     },
+     "idf.adapterTargetName": "esp32s2",
+-    "makefile.makefilePath": "./emu.mk"
++    "makefile.makefilePath": "./emu.mk",
++    "idf.espIdfPath": "/home/dylwhich/esp/esp-idf",
++    "idf.pythonBinPath": "/home/dylwhich/.espressif/python_env/idf4.4_py3.10_env/bin/python",
++    "idf.toolsPath": "/home/dylwhich/.espressif",
++    "idf.customExtraPaths": "/home/dylwhich/.espressif/tools/xtensa-esp32-elf/esp-2021r2-patch3-8.4.0/xtensa-esp32-elf/bin:/home/dylwhich/.espressif/tools/xtensa-esp32s2-elf/esp-2021r2-patch3-8.4.0/xtensa-esp32s2-elf/bin:/home/dylwhich/.espressif/tools/xtensa-esp32s3-elf/esp-2021r2-patch3-8.4.0/xtensa-esp32s3-elf/bin:/home/dylwhich/.espressif/tools/riscv32-esp-elf/esp-2021r2-patch3-8.4.0/riscv32-esp-elf/bin:/home/dylwhich/.espressif/tools/esp32ulp-elf/2.28.51-esp-20191205/esp32ulp-elf-binutils/bin:/home/dylwhich/.espressif/tools/esp32s2ulp-elf/2.28.51-esp-20191205/esp32s2ulp-elf-binutils/bin:/home/dylwhich/.espressif/tools/cmake/3.20.3/bin:/home/dylwhich/.espressif/tools/openocd-esp32/v0.11.0-esp32-20211220/openocd-esp32/bin:/home/dylwhich/.espressif/tools/ninja/1.10.2",
++    "idf.customExtraVars": "{\"OPENOCD_SCRIPTS\":\"/home/dylwhich/.espressif/tools/openocd-esp32/v0.11.0-esp32-20211220/openocd-esp32/share/openocd/scripts\"}",
++    "idf.gitPath": "/usr/bin/git"
+ }
+\ No newline at end of file
+diff --git a/emu/src/emu_sensors.c b/emu/src/emu_sensors.c
+index 70f2827..13994ef 100644
+--- a/emu/src/emu_sensors.c
++++ b/emu/src/emu_sensors.c
+@@ -46,7 +46,7 @@ void initButtons(timer_group_t group_num, timer_idx_t timer_num, uint8_t numButt
+ {
+     // The order in which keys are initialized
+     // Note that the actuall number of buttons initialized may be less than this
+-    char keyOrder[] = {'w', 's', 'a', 'd', 'l', 'k', 'o', 'i'};
++    char keyOrder[] = {',', 'o', 'a', 'e', 'n', 't', 'r', 'c'};
+     memcpy(inputKeys, keyOrder, numButtons);
+ 	buttonState = 0;
+ 	buttonQueue = list_new();
+diff --git a/main/modes/mode_dance.c b/main/modes/mode_dance.c
+index 2522fee..375fa4b 100644
+--- a/main/modes/mode_dance.c
++++ b/main/modes/mode_dance.c
+@@ -175,7 +175,7 @@ void danceMainLoop(int64_t elapsedUs)
+  */
+ void danceBatteryCb(uint32_t vBatt)
+ {
+-    ESP_LOGI("BAT", "%lld %d", esp_timer_get_time(), vBatt);
++    //ESP_LOGI("BAT", "%ld %d", esp_timer_get_time(), vBatt);
+ }
+ 
+ void danceButtonCb(buttonEvt_t* evt)
+diff --git a/sdkconfig b/sdkconfig
+index 3f679d3..b190ece 100644
+--- a/sdkconfig
++++ b/sdkconfig
+@@ -691,14 +691,13 @@ CONFIG_HEAP_TRACING_OFF=y
+ # CONFIG_LOG_DEFAULT_LEVEL_NONE is not set
+ # CONFIG_LOG_DEFAULT_LEVEL_ERROR is not set
+ # CONFIG_LOG_DEFAULT_LEVEL_WARN is not set
+-CONFIG_LOG_DEFAULT_LEVEL_INFO=y
+-# CONFIG_LOG_DEFAULT_LEVEL_DEBUG is not set
++# CONFIG_LOG_DEFAULT_LEVEL_INFO is not set
++CONFIG_LOG_DEFAULT_LEVEL_DEBUG=y
+ # CONFIG_LOG_DEFAULT_LEVEL_VERBOSE is not set
+-CONFIG_LOG_DEFAULT_LEVEL=3
++CONFIG_LOG_DEFAULT_LEVEL=4
+ CONFIG_LOG_MAXIMUM_EQUALS_DEFAULT=y
+-# CONFIG_LOG_MAXIMUM_LEVEL_DEBUG is not set
+ # CONFIG_LOG_MAXIMUM_LEVEL_VERBOSE is not set
+-CONFIG_LOG_MAXIMUM_LEVEL=3
++CONFIG_LOG_MAXIMUM_LEVEL=4
+ CONFIG_LOG_COLORS=y
+ CONFIG_LOG_TIMESTAMP_SOURCE_RTOS=y
+ # CONFIG_LOG_TIMESTAMP_SOURCE_SYSTEM is not set
+diff --git a/tools/sandbox_test/sandbox_interactive.c b/tools/sandbox_test/sandbox_interactive.c
+index 96e710b..10b16a6 100644
+--- a/tools/sandbox_test/sandbox_interactive.c
++++ b/tools/sandbox_test/sandbox_interactive.c
+@@ -105,9 +105,9 @@ int main( int argc, char ** argv )
+ 		else if( toprint > 0 )
+ 		{
+ #ifdef WIN32
+-			write( 1, rdata + 2, toprint );
+-#else
+ 			WriteConsoleA( hConsole, rdata+2, toprint, 0, 0 );
++#else
++			write( 1, rdata + 2, toprint );
+ #endif
+ 		}
+ 

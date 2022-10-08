@@ -1,0 +1,38 @@
+#!/bin/bash
+
+function swadge-emu() {
+    cd ~/esp/esp32-c3-playground && make -f emu.mk all && ./swadge_emulator
+}
+
+# Build and run emu (clean)
+
+function swadge-emu-clean() {
+    cd ~/esp/esp32-c3-playground && make -f emu.mk clean all && ./swadge_emulator
+}
+
+
+# Setup flash env
+
+function swadge-setup-env() {
+    . ~/esp/esp-idf/export.sh
+}
+
+# Flash real swadge
+
+function swadge-flash-monitor() {
+    cd ~/esp/esp32-c3-playground && ../esp-idf/tools/idf.py -p /dev/ttyACM0 -b 2000000 build flash monitor
+}
+
+function swadge-flash() {
+    cd ~/esp/esp32-c3-playground && ../esp-idf/tools/idf.py -p /dev/ttyACM0 -b 2000000 build flash
+}
+
+function swadge-erase() {
+    cd ~/esp/esp32-c3-playground && ../esp-idf/tools/idf.py -p /dev/ttyACM0 -b 2000000 erase-flash
+}
+
+
+# Monitor logs
+function swadge-monitor() {
+    cd ~/esp/esp32-c3-playground && sudo make -C ./tools/sandbox_test/ monitor
+}
